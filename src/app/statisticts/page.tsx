@@ -79,7 +79,7 @@ const RevenueStatistics = () => {
     const fetchRevenueStatistics = async () => {
         try {
             const response = await fetch(
-                `http://192.168.1.36:3000/api/revenue-statistics?startDate=${startDate}&endDate=${endDate}`,
+                `http://192.168.1.3:3000/api/revenue-statistics?startDate=${startDate}&endDate=${endDate}`,
                 {
                     method: 'GET',
                     headers: {
@@ -104,7 +104,7 @@ const RevenueStatistics = () => {
     const fetchProductSalesStatistics = async () => {
         try {
             const response = await fetch(
-                `http://192.168.1.36:3000/api/product-sales-statistics?startDate=${startDate}&endDate=${endDate}`,
+                `http://192.168.1.3:3000/api/product-sales-statistics?startDate=${startDate}&endDate=${endDate}`,
                 { method: 'GET', headers: { 'Content-Type': 'application/json' } }
             );
 

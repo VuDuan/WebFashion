@@ -11,7 +11,9 @@ const navItems: NavigationItemProps[] = [
   { title: "product", href: "/product", icon: "/icons/navbar/chart-histogram.svg" },
   { title: "order", href: "/order", icon: "/icons/navbar/chart-histogram.svg" },
   { title: "Statistic", href: "/statisticts", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "Suplier", href: "/supliers", icon: "/icons/navbar/chart-histogram.svg" }
+  { title: "Suplier", href: "/supliers", icon: "/icons/navbar/chart-histogram.svg" },
+  { title: "Product", href: "/products", icon: "/icons/navbar/chart-histogram.svg" },
+  { title: "Voucher", href: "/voucher", icon: "/icons/navbar/chart-histogram.svg" }
 ];
 
 // Danh sách navigation phía dưới
