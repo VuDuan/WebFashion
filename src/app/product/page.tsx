@@ -21,7 +21,7 @@ const product = () => {
 
     const fetchTypeProducts = async () => {
         try {
-            const response = await fetch('http://192.168.1.3:3000/api/typeproduct');
+            const response = await fetch('http://192.168.1.4:3000/api/typeproduct');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -81,8 +81,8 @@ const product = () => {
             }
 
             const url = isEditing
-                ? `http://192.168.1.3:3000/api/update-typeproduct/${selectedTypeProduct._id}`
-                : 'http://192.168.1.3:3000/api/add-type';
+                ? `http://192.168.1.4:3000/api/update-typeproduct/${selectedTypeProduct._id}`
+                : 'http://192.168.1.4:3000/api/add-type';
 
             const response = await fetch(url, {
                 method: isEditing ? 'PUT' : 'POST',
@@ -109,7 +109,7 @@ const product = () => {
     const handleDelete = async (id: any) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa loại sản phẩm này không?')) {
             try {
-                const response = await fetch(`http://192.168.1.3:3000/api/delete-typeproduct-by-id/${id}`, {
+                const response = await fetch(`http://192.168.1.4:3000/api/delete-typeproduct-by-id/${id}`, {
                     method: 'DELETE',
                 });
                 const result = await response.json();

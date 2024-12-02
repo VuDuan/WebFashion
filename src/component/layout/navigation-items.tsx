@@ -74,7 +74,7 @@ const NavigationItem = function ({
       {isCollapsed && open && (
         <span
           className={clsx(
-            "absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 rounded bg-black text-white text-xs whitespace-nowrap",
+            "absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 rounded  text-white text-xs whitespace-nowrap",
             " transition-opacity duration-200 z-50"
           )}
         >

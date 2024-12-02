@@ -79,7 +79,7 @@ const RevenueStatistics = () => {
     const fetchRevenueStatistics = async () => {
         try {
             const response = await fetch(
-                `http://192.168.1.3:3000/api/revenue-statistics?startDate=${startDate}&endDate=${endDate}`,
+                `http://192.168.1.4:3000/api/revenue-statistics?startDate=${startDate}&endDate=${endDate}`,
                 {
                     method: 'GET',
                     headers: {
@@ -101,25 +101,25 @@ const RevenueStatistics = () => {
         }
     };
 
-    const fetchProductSalesStatistics = async () => {
-        try {
-            const response = await fetch(
-                `http://192.168.1.3:3000/api/product-sales-statistics?startDate=${startDate}&endDate=${endDate}`,
-                { method: 'GET', headers: { 'Content-Type': 'application/json' } }
-            );
+    // const fetchProductSalesStatistics = async () => {
+    //     try {
+    //         const response = await fetch(
+    //             `http://192.168.1.36:3000/api/product-sales-statistics?startDate=${startDate}&endDate=${endDate}`,
+    //             { method: 'GET', headers: { 'Content-Type': 'application/json' } }
+    //         );
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to fetch sales statistics');
-            }
+    //         if (!response.ok) {
+    //             const errorData = await response.json();
+    //             throw new Error(errorData.message || 'Failed to fetch sales statistics');
+    //         }
 
-            const result = await response.json();
-            setSalesData(result);
-        } catch (err) {
-            console.error('Sales fetch error:', err);
-            setError(err instanceof Error ? err.message : 'An error occurred');
-        }
-    };
+    //         const result = await response.json();
+    //         setSalesData(result);
+    //     } catch (err) {
+    //         console.error('Sales fetch error:', err);
+    //         setError(err instanceof Error ? err.message : 'An error occurred');
+    //     }
+    // };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -127,7 +127,7 @@ const RevenueStatistics = () => {
         setError(null);
 
         try {
-            await Promise.all([fetchRevenueStatistics(), fetchProductSalesStatistics()]);
+            await Promise.all([fetchRevenueStatistics()]);
         } catch (err) {
             console.error('Submit error:', err);
             setError(err instanceof Error ? err.message : 'An error occurred');
@@ -139,7 +139,7 @@ const RevenueStatistics = () => {
     useEffect(() => {
         const initializeFetch = async () => {
             try {
-                await Promise.all([fetchRevenueStatistics(), fetchProductSalesStatistics()]);
+                await Promise.all([fetchRevenueStatistics()]);
             } catch (err) {
                 console.error('Initial fetch error:', err);
                 setError(err instanceof Error ? err.message : 'An error occurred');

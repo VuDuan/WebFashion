@@ -8,12 +8,13 @@ import Avatar from "../common/avatar";
 // Danh sách navigation phía trên
 const navItems: NavigationItemProps[] = [
   { title: "Dashboard", href: "/dashboard", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "product", href: "/product", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "order", href: "/order", icon: "/icons/navbar/chart-histogram.svg" },
+  { title: "Product", href: "/product", icon: "/icons/navbar/chart-histogram.svg" },
+  { title: "Order", href: "/order", icon: "/icons/navbar/chart-histogram.svg" },
   { title: "Statistic", href: "/statisticts", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "Suplier", href: "/supliers", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "Product", href: "/products", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "Voucher", href: "/voucher", icon: "/icons/navbar/chart-histogram.svg" }
+  { title: "Supplier", href: "/supliers", icon: "/icons/navbar/chart-histogram.svg" },
+  { title: "Products", href: "/products", icon: "/icons/navbar/chart-histogram.svg" },
+  { title: "Voucher", href: "/voucher", icon: "/icons/navbar/chart-histogram.svg" },
+  { title: "Evaluate", href: "/evaluate", icon: "/icons/navbar/chart-histogram.svg" }
 ];
 
 // Danh sách navigation phía dưới
@@ -30,22 +31,22 @@ const Layout = ({
   const ref = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="h-screen flex w-full overflow-hidden">
+    <div className="h-screen flex w-full overflow-hidden bg-gray-50">
       {/* Sidebar */}
       <div
         className={clsx(
-          "flex flex-col justify-between bg-black-100 px-4 py-5 transition-all duration-300",
+          "flex flex-col justify-between bg-white shadow-md px-4 py-5 transition-all duration-300 border-r",
           isCollapsed ? "w-16" : "w-60"
         )}
       >
         {/* Header Workspace */}
-        <div>
+        <div className="text-gray-800 py-2 px-2">
           <div
             ref={ref}
             onClick={() => setOpen(!open)}
             className={clsx(
-              "flex cursor-pointer items-center space-x-2",
-              isCollapsed && "flex-col space-x-0 justify-center"
+              "flex cursor-pointer items-center space-x-2 p-2 hover:bg-gray-200 rounded transition-colors",
+              isCollapsed && "flex-col space-x-0 justify-center p-10"
             )}
           >
             <Avatar
@@ -54,7 +55,7 @@ const Layout = ({
             />
             {!isCollapsed && (
               <p className="text-sm font-semibold max-w-[80%] truncate">
-                {"workspaceDetail?.name"}
+                {"Fashion Genz"}
               </p>
             )}
             <Svg
@@ -90,7 +91,7 @@ const Layout = ({
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 h-full bg-white overflow-auto">
+      <div className="flex-1 h-full bg-gray-100 overflow-auto">
         {children}
       </div>
     </div>

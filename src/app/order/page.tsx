@@ -16,7 +16,7 @@ const OrderList = () => {
     const fetchOrders = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://192.168.1.3:3000/api/get-list-orders`);
+            const response = await fetch(`http://192.168.1.4:3000/api/get-list-orders`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -46,7 +46,7 @@ const OrderList = () => {
 
     const handlePayment = async (orderId) => {
         try {
-            const response = await fetch(`http://192.168.1.3:3000/api/update-order/${orderId}`, {
+            const response = await fetch(`http://192.168.1.4:3000/api/update-order/${orderId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

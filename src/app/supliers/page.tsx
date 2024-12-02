@@ -23,7 +23,7 @@ const Suppliers = () => {
 
     const fetchSuppliers = async () => {
         try {
-            const response = await fetch('http://192.168.1.3:3000/api/suppliers');
+            const response = await fetch('http://192.168.1.4:3000/api/suppliers');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -92,8 +92,8 @@ const Suppliers = () => {
             }
 
             const url = isEditing
-                ? `http://192.168.1.3:3000/api/update-supplier/${selectedSupplier._id}`
-                : 'http://192.168.1.3:3000/api/add-supplier';
+                ? `http://192.168.1.4:3000/api/update-supplier/${selectedSupplier._id}`
+                : 'http://192.168.1.4:3000/api/add-supplier';
 
             const response = await fetch(url, {
                 method: isEditing ? 'PUT' : 'POST',
@@ -120,7 +120,7 @@ const Suppliers = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này không?')) {
             try {
-                const response = await fetch(`http://192.168.1.3:3000/api/delete-supplier-by-id/${id}`, {
+                const response = await fetch(`http://192.168.1.4:3000/api/delete-supplier-by-id/${id}`, {
                     method: 'DELETE',
                 });
                 const result = await response.json();
