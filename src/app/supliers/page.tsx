@@ -1,6 +1,9 @@
 "use client";
 import Layout from '@/component/layout/layout';
 import React, { useEffect, useState } from 'react';
+import CONFIG from '@/api/config';
+import { Modal, Table } from 'antd';
+import toast from 'react-hot-toast';
 
 const Suppliers = () => {
     const [data, setData] = useState([]);
@@ -16,6 +19,8 @@ const Suppliers = () => {
         description: '',
         image: null
     });
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showCancelModal, setShowCancelModal] = useState(false); // Trạng thái modal huỷ
 
     useEffect(() => {
         fetchSuppliers();
@@ -23,7 +28,7 @@ const Suppliers = () => {
 
     const fetchSuppliers = async () => {
         try {
-            const response = await fetch('http://192.168.1.4:3000/api/suppliers');
+            const response = await fetch(`${CONFIG.API_BASE_URL}/suppliers`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -92,51 +97,112 @@ const Suppliers = () => {
             }
 
             const url = isEditing
-                ? `http://192.168.1.4:3000/api/update-supplier/${selectedSupplier._id}`
-                : 'http://192.168.1.4:3000/api/add-supplier';
+                ? `${CONFIG.API_BASE_URL}/update-supplier/${selectedSupplier._id}`
+                : `${CONFIG.API_BASE_URL}/add-supplier`;
 
             const response = await fetch(url, {
                 method: isEditing ? 'PUT' : 'POST',
                 body: formDataToSend,
             });
-
             const result = await response.json();
 
             if (result.status === 200) {
-                alert(result.message);
+                toast.success(result.message);
                 resetForm();
                 fetchSuppliers();
             } else {
-                alert(result.message);
+                toast.error(result.message);
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Có lỗi xảy ra');
+            toast.error('Có lỗi xảy ra');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleDelete = async (id) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa nhà cung cấp này không?')) {
-            try {
-                const response = await fetch(`http://192.168.1.4:3000/api/delete-supplier-by-id/${id}`, {
-                    method: 'DELETE',
-                });
-                const result = await response.json();
+    const handleDelete = (supplier) => {
+        setSelectedSupplier(supplier);
+        setShowDeleteModal(true);
+    };
 
-                if (result.status === 200) {
-                    alert(result.messenger);
-                    fetchSuppliers();
-                } else {
-                    alert('Xóa thất bại: ' + result.messenger);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra khi xóa nhà cung cấp');
+    const confirmDelete = async () => {
+        setShowDeleteModal(false);
+        try {
+            const response = await fetch(`${CONFIG.API_BASE_URL}/delete-supplier-by-id/${selectedSupplier._id}`, {
+                method: 'DELETE',
+            });
+            const result = await response.json();
+
+            if (result.status === 200) {
+                toast.success(result.messenger);
+                fetchSuppliers();
+            } else {
+                toast.error('Xóa thất bại: ' + result.messenger);
             }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('Có lỗi xảy ra khi xóa nhà cung cấp');
         }
     };
+
+    const handleCancelClick = () => {
+        setShowCancelModal(true); // Mở modal xác nhận huỷ
+    };
+
+    const handleConfirmCancel = () => {
+        resetForm(); // Đặt lại form
+        setShowCancelModal(false); // Đóng modal
+    };
+
+    const handleCancel = () => {
+        setShowCancelModal(false); // Đóng modal nếu nhấn "Không"
+    };
+
+    const columns = [
+        {
+            title: 'Image',
+            dataIndex: 'image',
+            render: (text, record) => (
+                <img src={record.image} alt={record.name} className="w-16 h-16 object-cover rounded-md" />
+            )
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+        },
+        {
+            title: 'Description',
+            dataIndex: 'description',
+        },
+        {
+            title: 'Phone',
+            dataIndex: 'phone',
+        },
+        {
+            title: 'Email',
+            dataIndex: 'email',
+        },
+        {
+            title: 'Actions',
+            render: (text, supplier) => (
+                <>
+                    <button
+                        onClick={() => handleEdit(supplier)}
+                        className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded"
+                    >
+                        Update
+                    </button>
+                    <button
+                        onClick={() => handleDelete(supplier)}
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded ml-2"
+                    >
+                        Delete
+                    </button>
+                </>
+            )
+        }
+    ];
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -149,7 +215,7 @@ const Suppliers = () => {
                     <button
                         onClick={() => {
                             if (showForm) {
-                                resetForm();
+                                handleCancelClick(); // Mở modal xác nhận huỷ
                             } else {
                                 setShowForm(true);
                             }
@@ -235,56 +301,39 @@ const Suppliers = () => {
                             </button>
                             <button
                                 type="button"
-                                onClick={resetForm}
+                                onClick={handleCancelClick} // Mở modal xác nhận huỷ
                                 className="flex-1 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
                             >
-                                Cancle
+                                Huỷ
                             </button>
                         </div>
                     </form>
                 )}
 
-                <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white">
-                        <thead>
-                            <tr className="w-full bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                                <th className="py-3 px-6 text-left">Image</th>
-                                <th className="py-3 px-6 text-left">Name</th>
-                                <th className="py-3 px-6 text-left">Description</th>
-                                <th className="py-3 px-6 text-left">Phone</th>
-                                <th className="py-3 px-6 text-left">Email</th>
-                                <th className="py-3 px-6 text-left">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-gray-600 text-sm font-light">
-                            {data.map((supplier) => (
-                                <tr key={supplier._id} className="border-b border-gray-200 hover:bg-gray-100">
-                                    <td className="py-3 px-6 text-left">
-                                        <img src={supplier.image} alt={supplier.name} className="w-16 h-16 object-cover rounded-md" />
-                                    </td>
-                                    <td className="py-3 px-6 text-left">{supplier.name}</td>
-                                    <td className="py-3 px-6 text-left">{supplier.description}</td>
-                                    <td className="py-3 px-6 text-left">{supplier.phone}</td>
-                                    <td className="py-3 px-6 text-left">{supplier.email}</td>
-                                    <td className="py-3 px-6 text-left">
-                                        <button
-                                            onClick={() => handleEdit(supplier)}
-                                            className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded"
-                                        >
-                                            Update
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(supplier._id)}
-                                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded ml-2"
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                <Table
+                    columns={columns}
+                    dataSource={data}
+                    rowKey="_id"
+                    pagination={{ pageSize: 10 }}
+                />
+
+                <Modal
+                    title="Xóa nhà cung cấp"
+                    open={showDeleteModal}
+                    onOk={confirmDelete}
+                    onCancel={() => setShowDeleteModal(false)}
+                >
+                    <p>Bạn có chắc chắn muốn xóa nhà cung cấp này không?</p>
+                </Modal>
+
+                <Modal
+                    title="Xác nhận Huỷ"
+                    open={showCancelModal} // Sử dụng open thay vì visible
+                    onOk={handleConfirmCancel} // Gọi hàm xác nhận huỷ
+                    onCancel={handleCancel} // Gọi hàm nếu nhấn "Không"
+                >
+                    <p>Bạn có chắc chắn muốn huỷ không?</p>
+                </Modal>
             </div>
         </Layout>
     );

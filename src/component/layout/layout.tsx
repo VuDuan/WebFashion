@@ -7,13 +7,13 @@ import Avatar from "../common/avatar";
 
 // Danh sách navigation phía trên
 const navItems: NavigationItemProps[] = [
-  { title: "Dashboard", href: "/dashboard", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "Product", href: "/product", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "Order", href: "/order", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "Statistic", href: "/statisticts", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "Supplier", href: "/supliers", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "Products", href: "/products", icon: "/icons/navbar/chart-histogram.svg" },
-  { title: "Voucher", href: "/voucher", icon: "/icons/navbar/chart-histogram.svg" },
+  { title: "Dashboard", href: "/dashboard", icon: "/icons/navbar/dash.svg"},
+  { title: "Product ID", href: "/product", icon: "/icons/navbar/product.svg" },
+  { title: "Order", href: "/order", icon: "/icons/navbar/order.svg" },
+  { title: "Statistic", href: "/statisticts", icon: "/icons/navbar/static.svg" },
+  { title: "Supplier", href: "/supliers", icon: "/icons/navbar/supli.svg" },
+  { title: "Products", href: "/products", icon: "/icons/navbar/product.svg" },
+  { title: "Voucher", href: "/voucher", icon: "/icons/navbar/vouche.svg" },
   { title: "Evaluate", href: "/evaluate", icon: "/icons/navbar/chart-histogram.svg" }
 ];
 
@@ -67,7 +67,7 @@ const Layout = ({
           </div>
 
           {/* Navigation Items */}
-          <div className="mt-6 space-y-2">
+          <div className="mt-6 space-y-4 space-x-2">
             {navItems.map((nav, index) => (
               <NavigationItem
                 key={index}

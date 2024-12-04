@@ -1,11 +1,13 @@
 "use client";
 import Layout from '@/component/layout/layout';
 import React, { useState, useEffect } from 'react';
+import CONFIG from '@/api/config';
 const OrderList = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedState, setSelectedState] = useState(0);
+
 
     const orderStates = {
         0: 'Chờ xử lý',
@@ -16,7 +18,7 @@ const OrderList = () => {
     const fetchOrders = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://192.168.1.4:3000/api/get-list-orders`);
+            const response = await fetch(`${CONFIG.API_BASE_URL}/get-list-orders`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -46,7 +48,7 @@ const OrderList = () => {
 
     const handlePayment = async (orderId) => {
         try {
-            const response = await fetch(`http://192.168.1.4:3000/api/update-order/${orderId}`, {
+            const response = await fetch(`${CONFIG.API_BASE_URL}/update-order/${orderId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

@@ -1,8 +1,9 @@
-// pages/vouchers/index.js
 "use client";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Layout from '@/component/layout/layout';
+import CONFIG from '@/api/config';
+import { Pagination } from 'antd';
 
 export default function VouchersPage() {
     const [vouchers, setVouchers] = useState([]);
@@ -17,6 +18,8 @@ export default function VouchersPage() {
     });
     const [image, setImage] = useState(null);
     const [editingId, setEditingId] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize] = useState(5); // Số lượng voucher trên mỗi trang
     const router = useRouter();
 
     useEffect(() => {
@@ -24,7 +27,7 @@ export default function VouchersPage() {
     }, []);
 
     const fetchVouchers = async () => {
-        const response = await fetch('http://192.168.1.4:3000/api/get-list-voucher');
+        const response = await fetch(`${CONFIG.API_BASE_URL}/get-list-voucher`);
         const data = await response.json();
         if (data.status === 200) {
             setVouchers(data.data);
@@ -49,7 +52,7 @@ export default function VouchersPage() {
         });
 
         const method = editingId ? 'PUT' : 'POST';
-        const url = editingId ? `http://192.168.1.4:3000/api/update-voucher/${editingId}` : 'http://192.168.1.4:3000/api/add-voucher';
+        const url = editingId ? `${CONFIG.API_BASE_URL}/update-voucher/${editingId}` : `${CONFIG.API_BASE_URL}/add-voucher`;
 
         const response = await fetch(url, {
             method: method,
@@ -85,14 +88,9 @@ export default function VouchersPage() {
         setEditingId(voucher._id);
     };
 
-    const handleDelete = async (id) => {
-        if (confirm('Bạn có chắc chắn muốn xóa voucher này?')) {
-            await fetch(`http://192.168.1.4:3000/api/vouchers/${id}`, {
-                method: 'DELETE',
-            });
-            fetchVouchers();
-        }
-    };
+    // Tính toán sản phẩm trên trang hiện tại
+    const startIndex = (currentPage - 1) * pageSize;
+    const currentVouchers = vouchers.slice(startIndex, startIndex + pageSize);
 
     return (
         <Layout>
@@ -125,18 +123,28 @@ export default function VouchersPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {vouchers.map((voucher) => (
+                        {currentVouchers.map((voucher) => (
                             <tr key={voucher._id} className="border-b hover:bg-gray-100 transition duration-200">
                                 <td className="px-4 py-2">{voucher.name}</td>
                                 <td className="px-4 py-2">{voucher.discountValue}</td>
                                 <td className="px-4 py-2">
-                                    <button className="text-blue-500 hover:underline" onClick={() => handleEdit(voucher)}>Sửa</button>
-                                    <button className="text-red-500 hover:underline ml-4" onClick={() => handleDelete(voucher._id)}>Xóa</button>
+                                    <button className="w-[90px] border rounded px-3 py-2 focus:outline-none focus:ring-2  bg-yellow-500"
+                                        onClick={() => handleEdit(voucher)}>Sửa</button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+
+                {/* Thêm phân trang */}
+                <div className="flex justify-center mt-4">
+                    <Pagination
+                        current={currentPage}
+                        pageSize={pageSize}
+                        total={vouchers.length}
+                        onChange={(page) => setCurrentPage(page)}
+                    />
+                </div>
             </div>
         </Layout>
     );

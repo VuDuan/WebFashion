@@ -54,7 +54,7 @@ const NavigationItem = function ({
             "flex",
             isCollapsed
               ? "group flex-col justify-center items-center relative"
-              : "items-center gap-x-4 mx-4"
+              : "items-center gap-x-4 mx-4 space-x-4"
           )}
         >
           <span

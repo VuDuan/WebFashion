@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Layout from '@/component/layout/layout';
-
+import CONFIG from '@/api/config';
 export default function EvaluatePage() {
     const searchParams = useSearchParams();
     const productId = searchParams.get('productId');
@@ -15,7 +15,7 @@ export default function EvaluatePage() {
     }, [productId]);
 
     const fetchEvaluates = async () => {
-        const response = await fetch(`http://192.168.1.4:3000/api/evaluate?productId=${productId}`);
+        const response = await fetch(`${CONFIG.API_BASE_URL}/evaluate?productId=${productId}`);
         const data = await response.json();
         if (data.status === 200) {
             setEvaluates(data.data);

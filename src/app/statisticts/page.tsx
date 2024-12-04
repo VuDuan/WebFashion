@@ -1,6 +1,7 @@
 "use client";
 import Layout from '@/component/layout/layout';
 import React, { useEffect, useState } from 'react';
+import CONFIG from '@/api/config';
 import {
     BarChart,
     Bar,
@@ -79,7 +80,7 @@ const RevenueStatistics = () => {
     const fetchRevenueStatistics = async () => {
         try {
             const response = await fetch(
-                `http://192.168.1.4:3000/api/revenue-statistics?startDate=${startDate}&endDate=${endDate}`,
+                `${CONFIG.API_BASE_URL}/revenue-statistics?startDate=${startDate}&endDate=${endDate}`,
                 {
                     method: 'GET',
                     headers: {
