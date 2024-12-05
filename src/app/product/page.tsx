@@ -1,36 +1,43 @@
 "use client";
-
 import CONFIG from "@/api/config";
 import Layout from "@/component/layout/layout";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Product = () => {
     const [data, setData] = useState([]);
+    const [sizes, setSizes] = useState([]); // Danh sách kích cỡ
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [selectedTypeProduct, setSelectedTypeProduct] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
-        image: null
+        image: null,
+        id_size: ''
     });
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
 
-    React.useEffect(() => {
+    useEffect(() => {
         fetchTypeProducts();
+        fetchSizes();
     }, []);
+
+    const fetchSizes = async () => {
+        try {
+            const response = await fetch(`${CONFIG.API_BASE_URL}/get-list-size`);
+            const req = await response.json();
+            setSizes(req.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const fetchTypeProducts = async () => {
         try {
             const response = await fetch(`${CONFIG.API_BASE_URL}/typeproduct`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
             const req = await response.json();
             setData(req.data);
         } catch (error) {
-            console.error(error instanceof Error ? error.message : 'An unknown error occurred');
+            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -51,11 +58,20 @@ const Product = () => {
         }));
     };
 
+    const handleSizeChange = (e: any) => {
+        const selectedSizes = Array.from(e.target.selectedOptions, option => option.value);
+        setFormData(prev => ({
+            ...prev,
+            id_size: selectedSizes.join(',')
+        }));
+    };
+
     const handleEdit = (typeProduct: any) => {
         setSelectedTypeProduct(typeProduct);
         setFormData({
             name: typeProduct.name,
-            image: null
+            image: null,
+            id_size: typeProduct.id_size.map((size: { _id: any; }) => size._id).join(',')
         });
         setIsEditing(true);
         setShowModal(true);
@@ -64,14 +80,15 @@ const Product = () => {
     const resetForm = () => {
         setFormData({
             name: '',
-            image: null
+            image: null,
+            id_size: ''
         });
         setIsEditing(false);
         setSelectedTypeProduct(null);
         setShowModal(false);
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         setLoading(true);
 
@@ -81,6 +98,7 @@ const Product = () => {
             if (formData.image) {
                 formDataToSend.append('image', formData.image);
             }
+            formDataToSend.append('id_size', formData.id_size);
 
             const url = isEditing
                 ? `${CONFIG.API_BASE_URL}/update-typeproduct/${selectedTypeProduct._id}`
@@ -117,22 +135,17 @@ const Product = () => {
                 const result = await response.json();
 
                 if (result.status === 200) {
-                    alert(result.messenger);
+                    alert(result.message);
                     fetchTypeProducts();
                 } else {
-                    alert('Xóa thất bại: ' + result.messenger);
+                    alert(result.message);
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error deleting type product:', error);
                 alert('Có lỗi xảy ra khi xóa loại sản phẩm');
             }
         }
     };
-
-    const totalPages = Math.ceil(data.length / itemsPerPage);
-    const currentItems = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-    if (loading) return <div className="text-center">Loading...</div>;
 
     return (
         <Layout>
@@ -150,7 +163,6 @@ const Product = () => {
                     </button>
                 </div>
 
-                {/* Modal */}
                 {showModal && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                         <div className="bg-white rounded-lg shadow-lg p-6 w-96">
@@ -168,6 +180,21 @@ const Product = () => {
                                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                         required
                                     />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Kích cỡ</label>
+                                    <select
+                                        multiple
+                                        onChange={handleSizeChange}
+                                        value={formData.id_size.split(',')}
+                                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                        required
+                                    >
+                                        {sizes.map(size => (
+                                            <option key={size._id} value={size._id}>{size.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
 
                                 <div>
@@ -208,18 +235,20 @@ const Product = () => {
                     <table className="min-w-full bg-white rounded-lg shadow">
                         <thead>
                             <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                                <th className="py-3 px-6 text-left">Image</th>
                                 <th className="py-3 px-6 text-left">Tên</th>
-                                <th className="py-3 px-6 text-left">Actions</th>
+                                <th className="py-3 px-6 text-left">Kích cỡ</th>
+                                <th className="py-3 px-6 text-left">Hình ảnh</th>
+                                <th className="py-3 px-6 text-left">Hành động</th>
                             </tr>
                         </thead>
                         <tbody className="text-gray-600 text-sm font-light">
-                            {currentItems.map((typeProduct) => (
+                            {data.map((typeProduct) => (
                                 <tr key={typeProduct._id} className="border-b border-gray-200 hover:bg-gray-100">
+                                    <td className="py-3 px-6 text-left">{typeProduct.name}</td>
+                                    <td className="py-3 px-6 text-left">{typeProduct.id_size.map((size: { name: any; }) => size.name).join(', ')}</td>
                                     <td className="py-3 px-6 text-left">
                                         <img src={typeProduct.image} alt={typeProduct.name} className="w-16 h-16 object-cover rounded-md" />
                                     </td>
-                                    <td className="py-3 px-6 text-left">{typeProduct.name}</td>
                                     <td className="py-3 px-6 text-left">
                                         <button
                                             onClick={() => handleEdit(typeProduct)}
@@ -238,25 +267,6 @@ const Product = () => {
                             ))}
                         </tbody>
                     </table>
-                </div>
-
-                {/* Phân trang */}
-                <div className="flex justify-between items-center mt-4">
-                    <button
-                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                        disabled={currentPage === 1}
-                        className="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded disabled:opacity-50"
-                    >
-                        Previous
-                    </button>
-                    <span className="font-bold">Page {currentPage} of {totalPages}</span>
-                    <button
-                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                        disabled={currentPage === totalPages}
-                        className="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded disabled:opacity-50"
-                    >
-                        Next
-                    </button>
                 </div>
             </div>
         </Layout>

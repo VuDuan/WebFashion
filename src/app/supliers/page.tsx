@@ -35,13 +35,13 @@ const Suppliers = () => {
             const req = await response.json();
             setData(req.data);
         } catch (error) {
-            setError(error.message);
+            console.log("error", error)
         } finally {
             setLoading(false);
         }
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: any) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
@@ -49,14 +49,14 @@ const Suppliers = () => {
         }));
     };
 
-    const handleImageChange = (e) => {
+    const handleImageChange = (e: any) => {
         setFormData(prev => ({
             ...prev,
             image: e.target.files[0]
         }));
     };
 
-    const handleEdit = (supplier) => {
+    const handleEdit = (supplier: any) => {
         setSelectedSupplier(supplier);
         setFormData({
             name: supplier.name,
@@ -82,7 +82,7 @@ const Suppliers = () => {
         setShowForm(false);
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         setLoading(true);
 
@@ -121,7 +121,7 @@ const Suppliers = () => {
         }
     };
 
-    const handleDelete = (supplier) => {
+    const handleDelete = (supplier: any) => {
         setSelectedSupplier(supplier);
         setShowDeleteModal(true);
     };
@@ -163,7 +163,7 @@ const Suppliers = () => {
         {
             title: 'Image',
             dataIndex: 'image',
-            render: (text, record) => (
+            render: (text: any, record: any) => (
                 <img src={record.image} alt={record.name} className="w-16 h-16 object-cover rounded-md" />
             )
         },
@@ -185,7 +185,7 @@ const Suppliers = () => {
         },
         {
             title: 'Actions',
-            render: (text, supplier) => (
+            render: (text: any, supplier: any) => (
                 <>
                     <button
                         onClick={() => handleEdit(supplier)}
@@ -215,7 +215,7 @@ const Suppliers = () => {
                     <button
                         onClick={() => {
                             if (showForm) {
-                                handleCancelClick(); // Mở modal xác nhận huỷ
+                                handleCancelClick();
                             } else {
                                 setShowForm(true);
                             }
@@ -301,7 +301,7 @@ const Suppliers = () => {
                             </button>
                             <button
                                 type="button"
-                                onClick={handleCancelClick} // Mở modal xác nhận huỷ
+                                onClick={handleCancelClick}
                                 className="flex-1 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
                             >
                                 Huỷ
@@ -328,9 +328,9 @@ const Suppliers = () => {
 
                 <Modal
                     title="Xác nhận Huỷ"
-                    open={showCancelModal} // Sử dụng open thay vì visible
-                    onOk={handleConfirmCancel} // Gọi hàm xác nhận huỷ
-                    onCancel={handleCancel} // Gọi hàm nếu nhấn "Không"
+                    open={showCancelModal}
+                    onOk={handleConfirmCancel}
+                    onCancel={handleCancel}
                 >
                     <p>Bạn có chắc chắn muốn huỷ không?</p>
                 </Modal>

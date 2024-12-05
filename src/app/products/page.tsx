@@ -63,7 +63,6 @@ export default function Products() {
             const response = await fetch(`${CONFIG.API_BASE_URL}/get-list-voucher`);
             const data = await response.json();
             if (data.status === 200) {
-                setVouchers(data.data);
             }
         } catch (error) {
             console.error('Error fetching vouchers:', error);
@@ -117,7 +116,7 @@ export default function Products() {
         }
     };
 
-    const openModal = (product = null) => {
+    const openModal = (product: any) => {
         if (product) {
             setFormData({
                 product_name: product.product_name,
