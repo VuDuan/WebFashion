@@ -2,10 +2,18 @@
 import CONFIG from "@/api/config";
 import Layout from "@/component/layout/layout";
 import React, { useState, useEffect } from "react";
-
+interface Size {
+    _id: string;
+    name: string
+}
+interface ProductType {
+    _id: string;
+    name: string;
+    image: string;
+}
 const Product = () => {
-    const [data, setData] = useState([]);
-    const [sizes, setSizes] = useState([]); // Danh sách kích cỡ
+    const [data, setData] = useState<ProductType[]>([]);
+    const [sizes, setSizes] = useState<Size[]>([]); // Danh sách kích cỡ
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -62,7 +70,7 @@ const Product = () => {
         const selectedSizes = Array.from(e.target.selectedOptions, option => option.value);
         setFormData(prev => ({
             ...prev,
-            id_size: selectedSizes.join(',')
+            id_size: selectedSizes.join(',') // Lưu ID kích cỡ dưới dạng chuỗi
         }));
     };
 
@@ -71,7 +79,7 @@ const Product = () => {
         setFormData({
             name: typeProduct.name,
             image: null,
-            id_size: typeProduct.id_size.map((size: { _id: any; }) => size._id).join(',')
+            id_size: typeProduct.id_size.map((size: { _id: any; }) => size._id).join(','), // Chuyển đổi ID kích cỡ thành chuỗi
         });
         setIsEditing(true);
         setShowModal(true);
@@ -245,7 +253,7 @@ const Product = () => {
                             {data.map((typeProduct) => (
                                 <tr key={typeProduct._id} className="border-b border-gray-200 hover:bg-gray-100">
                                     <td className="py-3 px-6 text-left">{typeProduct.name}</td>
-                                    <td className="py-3 px-6 text-left">{typeProduct.id_size.map((size: { name: any; }) => size.name).join(', ')}</td>
+                                    <td className="py-3 px-6 text-left">{typeProduct.id_size.map(size => size.name).join(', ')}</td>
                                     <td className="py-3 px-6 text-left">
                                         <img src={typeProduct.image} alt={typeProduct.name} className="w-16 h-16 object-cover rounded-md" />
                                     </td>

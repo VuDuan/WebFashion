@@ -8,7 +8,7 @@ import Avatar from "../common/avatar";
 // Danh sách navigation phía trên
 const navItems: NavigationItemProps[] = [
   { title: "Dashboard", href: "/dashboard", icon: "/icons/navbar/dash.svg"},
-  { title: "Product ID", href: "/product", icon: "/icons/navbar/product.svg" },
+  { title: "Type Product", href: "/product", icon: "/icons/navbar/product.svg" },
   { title: "Order", href: "/order", icon: "/icons/navbar/order.svg" },
   { title: "Statistic", href: "/statisticts", icon: "/icons/navbar/static.svg" },
   { title: "Supplier", href: "/supliers", icon: "/icons/navbar/supli.svg" },
