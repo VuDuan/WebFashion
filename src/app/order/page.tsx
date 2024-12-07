@@ -2,12 +2,41 @@
 import Layout from '@/component/layout/layout';
 import React, { useState, useEffect } from 'react';
 import CONFIG from '@/api/config';
+
+const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-1/3 max-w-md mx-auto transition-transform transform scale-95 hover:scale-100">
+                <h2 className="text-xl font-bold mb-4">Xác nhận thanh toán</h2>
+                <p>Bạn có chắc chắn muốn thanh toán đơn hàng này?</p>
+                <div className="flex justify-end mt-4">
+                    <button
+                        onClick={onClose}
+                        className="mr-2 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition duration-200"
+                    >
+                        Hủy
+                    </button>
+                    <button
+                        onClick={onConfirm}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
+                    >
+                        Xác nhận
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const OrderList = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedState, setSelectedState] = useState(0);
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentOrderId, setCurrentOrderId] = useState(null);
 
     const orderStates = {
         0: 'Chờ xử lý',
@@ -46,9 +75,17 @@ const OrderList = () => {
         fetchOrders();
     }, [selectedState]);
 
-    const handlePayment = async (orderId) => {
+    const handlePayment = (orderId) => {
+        setIsModalOpen(true); // Mở modal
+        setCurrentOrderId(orderId); // Lưu ID đơn hàng hiện tại
+
+    };
+
+    const handleConfirmPayment = async () => {
+        if (!currentOrderId) return;
+
         try {
-            const response = await fetch(`${CONFIG.API_BASE_URL}/update-order/${orderId}`, {
+            const response = await fetch(`${CONFIG.API_BASE_URL}/update-order/${currentOrderId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -63,14 +100,16 @@ const OrderList = () => {
             const data = await response.json();
 
             if (data.status === 200) {
-                // Cập nhật lại danh sách đơn hàng
-                fetchOrders();
+                fetchOrders(); // Cập nhật lại danh sách đơn hàng
             } else {
                 throw new Error(data.messenger);
             }
         } catch (err) {
             console.error('Update error:', err);
             alert(`Đã xảy ra lỗi khi cập nhật trạng thái đơn hàng: ${err.message}`);
+        } finally {
+            setIsModalOpen(false); // Đóng modal sau khi xác nhận
+            setCurrentOrderId(null); // Reset ID đơn hàng
         }
     };
 
@@ -152,7 +191,7 @@ const OrderList = () => {
                                     <div>
                                         {order.state === 0 && (
                                             <button
-                                                onClick={() => handlePayment(order._id)}
+                                                onClick={() => handlePayment(order._id)} // Mở modal khi nhấn
                                                 className="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 hover:bg-blue-200"
                                             >
                                                 Thanh toán
@@ -204,6 +243,12 @@ const OrderList = () => {
                     </div>
                 )}
             </div>
+
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onConfirm={handleConfirmPayment}
+            />
         </Layout>
     );
 };

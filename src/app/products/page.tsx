@@ -6,21 +6,22 @@ import CONFIG from '@/api/config';
 import { Table, Pagination } from 'antd';
 
 interface SizeQuantity {
+    sizeId: string; // Thêm thuộc tính sizeId
     size: string;
     quantity: string;
 }
 
 interface List {
     _id: Key | null | undefined;
-    product_name: string,
-    price: string,
-    quantity: string,
-    description: string,
-    state: boolean, // Thay đổi ở đây
-    id_producttype: string,
-    id_suppliers: string,
-    selectedVoucher: string,
-    sizeQuantities: SizeQuantity[],
+    product_name: string;
+    price: string;
+    quantity: number;
+    description: string;
+    state: boolean;
+    id_producttype: string;
+    id_suppliers: string;
+    selectedVoucher: string;
+    sizeQuantities: SizeQuantity[];
 }
 
 export default function Products() {
@@ -34,7 +35,7 @@ export default function Products() {
         price: '',
         quantity: '',
         description: '',
-        state: true, // Thay đổi ở đây
+        state: true,
         id_producttype: '',
         id_suppliers: '',
         selectedVoucher: '',
@@ -59,7 +60,11 @@ export default function Products() {
             const response = await fetch(`${CONFIG.API_BASE_URL}/prodct`);
             const data = await response.json();
             if (data.status === 200) {
-                setProducts(data.data);
+                const updatedProducts = data.data.map((product: List) => {
+                    const totalQuantity = product.sizeQuantities.reduce((sum, size) => sum + (size.quantity || 0), 0);
+                    return { ...product, quantity: totalQuantity }; // Cập nhật quantity
+                });
+                setProducts(updatedProducts);
             }
         } catch (error) {
             console.error('Error fetching products:', error);
@@ -104,30 +109,35 @@ export default function Products() {
             }
         }
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formDataToSend = new FormData();
-    
+
         images.forEach((image) => {
             formDataToSend.append('image', image);
         });
-    
+
+        const updatedSizeQuantities = sizeQuantities.map(({ sizeId, quantity }) => ({
+            sizeId,
+            quantity: Number(quantity) || 0 // Chuyển đổi sang number
+        }));
+
+        const totalQuantity = updatedSizeQuantities.reduce((sum, size) => sum + (size.quantity || 0), 0);
+        setFormData({ ...formData, quantity: totalQuantity }); // Cập nhật quantity
+
         Object.keys(formData).forEach(key => {
             if (key === 'sizeQuantities') {
-                formDataToSend.append(key, JSON.stringify(formData[key]));
-            } else if (key === 'state') {
-                formDataToSend.append(key, formData[key]);
+                formDataToSend.append(key, JSON.stringify(updatedSizeQuantities));
             } else {
                 formDataToSend.append(key, formData[key]);
             }
         });
-    
+
         try {
             const url = isEditing
                 ? `${CONFIG.API_BASE_URL}/update-product/${currentProductId}`
                 : `${CONFIG.API_BASE_URL}/add-product`;
-    
+
             const response = await fetch(url, {
                 method: isEditing ? 'PUT' : 'POST',
                 body: formDataToSend,
@@ -149,7 +159,7 @@ export default function Products() {
 
         if (selectedType && Array.isArray(selectedType.id_size)) {
             setAvailableSizes(selectedType.id_size);
-            setSizeQuantities(selectedType.id_size.map(size => ({ size: size.name, quantity: '' })));
+            setSizeQuantities(selectedType.id_size.map(size => ({ sizeId: size._id, size: size.name, quantity: '' })));
         } else {
             setAvailableSizes([]);
             setSizeQuantities([]);
@@ -163,7 +173,7 @@ export default function Products() {
                 price: product.price,
                 quantity: product.quantity,
                 description: product.description,
-                state: product.state, // Đây là Boolean
+                state: product.state,
                 id_producttype: product.id_producttype,
                 id_suppliers: product.id_suppliers,
                 selectedVoucher: '',
@@ -183,7 +193,7 @@ export default function Products() {
                 price: '',
                 quantity: '',
                 description: '',
-                state: true, // Thay đổi ở đây
+                state: true,
                 id_producttype: '',
                 id_suppliers: '',
                 selectedVoucher: '',
@@ -301,7 +311,7 @@ export default function Products() {
                                                 value={sizeQuantities[index]?.quantity || ''}
                                                 onChange={(e) => {
                                                     const newSizes = [...sizeQuantities];
-                                                    newSizes[index] = { size: size.name, quantity: e.target.value };
+                                                    newSizes[index] = { sizeId: size._id, size: size.name, quantity: e.target.value };
                                                     setSizeQuantities(newSizes);
                                                 }}
                                             />
