@@ -7,18 +7,20 @@ import Avatar from "../common/avatar";
 
 // Danh sách navigation phía trên
 const navItems: NavigationItemProps[] = [
-  { title: "Dashboard", href: "/dashboard", icon: "/icons/navbar/dash.svg"},
+  { title: "Dashboard", href: "/dashboard", icon: "/icons/navbar/dash.svg" },
   { title: "Type Product", href: "/productType", icon: "/icons/navbar/product.svg" },
   { title: "Order", href: "/order", icon: "/icons/navbar/order.svg" },
   { title: "Statistic", href: "/statisticts", icon: "/icons/navbar/static.svg" },
   { title: "Supplier", href: "/supliers", icon: "/icons/navbar/supli.svg" },
   { title: "Products", href: "/products", icon: "/icons/navbar/product.svg" },
   { title: "Voucher", href: "/voucher", icon: "/icons/navbar/vouche.svg" },
-  { title: "Evaluate", href: "/evaluate", icon: "/icons/navbar/chart-histogram.svg" }
 ];
 
 // Danh sách navigation phía dưới
-const bottomNavItems: NavigationItemProps[] = [];
+const bottomNavItems: NavigationItemProps[] = [
+  { title: "Notificition", href: "/dashboard", icon: "/icons/navbar/user.svg" },
+  { title: "Notification", href: "/dashboard", icon: "/icons/navbar/noti.svg" },
+];
 
 const Layout = ({
   children,

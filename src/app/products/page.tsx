@@ -349,7 +349,7 @@ export default function Products() {
                     </div>
                 )}
 
-                <div className="overflow-x-auto">
+                <div className="overflow-y-auto h-[620px]">
                     <table className="min-w-full bg-white shadow-md rounded">
                         <thead className="bg-gray-200">
                             <tr>
