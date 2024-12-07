@@ -233,7 +233,7 @@ export default function Products() {
                         <div className="bg-white rounded shadow-lg p-6 w-1/2">
                             <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit Product' : 'Add Product'}</h2>
                             <form onSubmit={handleSubmit}>
-                                <div className="mb-4">
+                                <div className="mb-4 text-[12px]">
                                     <label className="block mb-2 text-gray-700">Product Name</label>
                                     <input
                                         type="text"
@@ -244,7 +244,7 @@ export default function Products() {
                                     />
                                 </div>
 
-                                <div className="mb-4">
+                                <div className="mb-4 text-[12px]">
                                     <label className="block mb-2 text-gray-700">Images</label>
                                     <input
                                         type="file"
@@ -255,7 +255,7 @@ export default function Products() {
                                     />
                                 </div>
 
-                                <div className="mb-4">
+                                <div className="mb-4 text-[12px]">
                                     <label className="block mb-2 text-gray-700">Price</label>
                                     <input
                                         type="number"
@@ -266,7 +266,7 @@ export default function Products() {
                                     />
                                 </div>
 
-                                <div className="mb-4">
+                                <div className="mb-4 text-[12px]">
                                     <label className="block mb-2 text-gray-700">Product Type</label>
                                     <select
                                         className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -283,7 +283,7 @@ export default function Products() {
                                     </select>
                                 </div>
 
-                                <div className="mb-4">
+                                <div className="mb-4 text-[12px]">
                                     <label className="block mb-2 text-gray-700">Supplier</label>
                                     <select
                                         className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -300,7 +300,7 @@ export default function Products() {
                                     </select>
                                 </div>
 
-                                <div className="mb-4">
+                                <div className="mb-4 text-[12px]">
                                     <label className="block mb-2 text-gray-700">Sizes</label>
                                     {availableSizes.map((size, index) => (
                                         <div key={size._id} className="mb-2 flex items-center">
@@ -317,6 +317,16 @@ export default function Products() {
                                             />
                                         </div>
                                     ))}
+                                </div>
+                                <div className="mb-4 text-[12px]">
+                                    <label className="block mb-2 text-gray-700">Description</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        value={formData.description}
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        required
+                                    />
                                 </div>
 
                                 <div className='justify-center items-center'>
@@ -347,6 +357,7 @@ export default function Products() {
                                 <th className="px-4 py-2 text-left">Name</th>
                                 <th className="px-4 py-2 text-left">Price</th>
                                 <th className="px-4 py-2 text-left">Quantity</th>
+                                <th className="px-4 py-2 text-left">Description</th>
                                 <th className="px-4 py-2 text-left">Actions</th>
                             </tr>
                         </thead>
@@ -363,6 +374,9 @@ export default function Products() {
                                     <td className="px-4 py-2">{product.product_name}</td>
                                     <td className="px-4 py-2">${product.price}</td>
                                     <td className="px-4 py-2">{product.quantity}</td>
+                                    <td className="px-4 py-2 overflow-hidden whitespace-nowrap text-ellipsis w-[30px]" style={{ maxWidth: '30px' }}>
+                                        {product.description}
+                                    </td>
                                     <td className="px-4 py-2">
                                         <div className="grid space-y-2">
                                             <button
