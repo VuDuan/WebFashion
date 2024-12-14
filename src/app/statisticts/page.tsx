@@ -71,12 +71,16 @@ const RevenueStatistics = () => {
             case 'year':
                 start = new Date(today.getFullYear(), 0, 1);
                 break;
+            case 'today': // Thêm trường hợp cho ngày hôm nay
+                start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                break;
         }
 
         setActiveTimeRange(range);
         setStartDate(formatDateForInput(start));
         setEndDate(formatDateForInput(new Date()));
     };
+
     const fetchRevenueStatistics = async () => {
         try {
             const response = await fetch(
@@ -101,26 +105,6 @@ const RevenueStatistics = () => {
             setError(err instanceof Error ? err.message : 'An error occurred');
         }
     };
-
-    // const fetchProductSalesStatistics = async () => {
-    //     try {
-    //         const response = await fetch(
-    //             `http://192.168.1.36:3000/api/product-sales-statistics?startDate=${startDate}&endDate=${endDate}`,
-    //             { method: 'GET', headers: { 'Content-Type': 'application/json' } }
-    //         );
-
-    //         if (!response.ok) {
-    //             const errorData = await response.json();
-    //             throw new Error(errorData.message || 'Failed to fetch sales statistics');
-    //         }
-
-    //         const result = await response.json();
-    //         setSalesData(result);
-    //     } catch (err) {
-    //         console.error('Sales fetch error:', err);
-    //         setError(err instanceof Error ? err.message : 'An error occurred');
-    //     }
-    // };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -183,7 +167,7 @@ const RevenueStatistics = () => {
 
                 {/* Time Range Selector */}
                 <div className="mb-6 flex space-x-4">
-                    {['week', 'month', 'year'].map((range) => (
+                    {['today', 'week', 'month', 'year'].map((range) => (
                         <button
                             key={range}
                             onClick={() => handleTimeRangeChange(range)}

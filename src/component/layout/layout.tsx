@@ -4,7 +4,8 @@ import NavigationItem, { NavigationItemProps } from "./navigation-items";
 import clsx from "clsx";
 import Svg from "../icons/svg";
 import Avatar from "../common/avatar";
-
+import LogoutModal from "@/app/logout/page"; // Đảm bảo đường dẫn là chính xác
+import { useRouter } from "next/navigation";
 // Danh sách navigation phía trên
 const navItems: NavigationItemProps[] = [
   { title: "Dashboard", href: "/dashboard", icon: "/icons/navbar/dash.svg" },
@@ -18,7 +19,7 @@ const navItems: NavigationItemProps[] = [
 
 // Danh sách navigation phía dưới
 const bottomNavItems: NavigationItemProps[] = [
-  { title: "Notificition", href: "/dashboard", icon: "/icons/navbar/user.svg" },
+  { title: "Setting", href: "/logout", icon: "/icons/navbar/user.svg" },
   { title: "Notification", href: "/dashboard", icon: "/icons/navbar/noti.svg" },
 ];
 
@@ -30,7 +31,16 @@ const Layout = ({
   isCollapsed?: boolean;
 }) => {
   const [open, setOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái cho modal
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter(); 
+  const handleLogout = () => {
+    // Logic để đăng xuất (ví dụ xóa token, điều hướng trang, v.v.)
+    console.log("User logged out");
+    router.push("/login"); // Chỉnh sửa đường dẫn đến trang bạn muốn
+    setIsModalOpen(false); // Đóng modal
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="h-screen flex w-full overflow-hidden bg-gray-50">
@@ -87,6 +97,10 @@ const Layout = ({
               key={index}
               {...nav}
               isCollapsed={isCollapsed}
+              onClick={nav.title === "Setting" ? (e) => {
+                e.preventDefault(); // Ngăn chặn điều hướng
+                setIsModalOpen(true); // Mở modal
+              } : undefined} // Mở modal khi bấm vào Setting
             />
           ))}
         </div>
@@ -96,6 +110,13 @@ const Layout = ({
       <div className="flex-1 h-full bg-gray-100 overflow-auto">
         {children}
       </div>
+
+      {/* Logout Modal */}
+      <LogoutModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onLogout={handleLogout}
+      />
     </div>
   );
 };
