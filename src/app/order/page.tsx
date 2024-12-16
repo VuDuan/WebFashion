@@ -3,14 +3,15 @@ import Layout from '@/component/layout/layout';
 import React, { useState, useEffect } from 'react';
 import CONFIG from '@/api/config';
 import Image from 'next/image';
+
 const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
     if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-1/3 max-w-md mx-auto transition-transform transform scale-95 hover:scale-100">
-                <h2 className="text-xl font-bold mb-4">Xác nhận thanh toán</h2>
-                <p>Bạn có chắc chắn muốn thanh toán đơn hàng này?</p>
+                <h2 className="text-xl font-bold mb-4">Xác nhận đã giao</h2>
+                <p>Bạn có chắc chắn muốn hoàn thành đơn hàng này?</p>
                 <div className="flex justify-end mt-4">
                     <button
                         onClick={onClose}
@@ -51,13 +52,16 @@ const OrderDetailModal = ({ isOpen, onClose, order }) => {
         <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-1/3 max-w-md mx-auto transition-transform transform scale-95 hover:scale-100">
                 <h2 className="text-xl font-bold mb-4">Chi tiết đơn hàng #{order?._id}</h2>
+                <p>Tên người dùng: {order?.name_user}</p>
+                <p>Số điện thoại: {order?.phone_user}</p>
+                <p>Địa chỉ: {order?.address_user}</p>
                 <p>Ngày đặt: {new Date(order?.createdAt).toLocaleDateString('vi-VN')}</p>
                 <p>Tổng tiền: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order?.total_amount)}</p>
                 <h3 className="font-bold mt-4">Sản phẩm:</h3>
                 <ul>
                     {order?.products.map((item, index) => (
-                        <li key={index} className="flex justify-between">
-                            <div className="flex items-center">
+                        <li key={index} className="grid justify-between">
+                            <div className="grid items-center">
                                 <img
                                     src={item.productId?.image[currentImageIndex]}
                                     className="w-20 h-20 object-cover rounded"
@@ -65,19 +69,18 @@ const OrderDetailModal = ({ isOpen, onClose, order }) => {
                                 <div className="ml-4">
                                     <span>{item.productId?.product_name} - {item.quantity} x {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}</span>
                                 </div>
+                                <span className='ml-4'>Size: {item.sizeId?.name}</span>
                             </div>
+
+
                         </li>
                     ))}
                 </ul>
-                <div className="flex gap-2 mt-4">
-                    <button
-                        onClick={handlePrevImage}
-                    >
+                <div className="flex m-4">
+                    <button onClick={handlePrevImage}>
                         <Image src="/icons/image/1.png" alt='' className="w-4 h-4 mr-2" width={20} height={20} />
                     </button>
-                    <button
-                        onClick={handleNextImage}
-                    >
+                    <button onClick={handleNextImage}>
                         <Image src="/icons/image/2.png" alt='' className="w-4 h-4 mr-2" width={20} height={20} />
                     </button>
                 </div>
@@ -105,10 +108,9 @@ const OrderList = () => {
 
     const orderStates = {
         0: 'Chờ xử lý',
-        1: 'Đã thanh toán',
-        2: 'Thanh toán sau giao hàng',
-        3: 'Đang giao',
-        4: 'Đã giao'
+        1: 'Đang giao',
+        2: 'Đã giao',
+        3: 'Hủy'
     };
 
     const fetchOrders = async () => {
@@ -156,7 +158,7 @@ const OrderList = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ state: 1 }) // Đã thanh toán
+                body: JSON.stringify({ state: 2 })
             });
 
             if (!response.ok) {
@@ -266,7 +268,6 @@ const OrderList = () => {
                             <div
                                 key={order._id}
                                 className="bg-white rounded-lg shadow p-6 cursor-pointer"
-                                onClick={() => setSelectedOrder(order)} // Mở modal chi tiết
                             >
                                 <div className="flex justify-between items-center mb-4">
                                     <div>
@@ -276,30 +277,35 @@ const OrderList = () => {
                                         </p>
                                     </div>
                                     <div>
-                                        {(order.state === 0 || order.state === 4) && (
+                                        {order.state === 0 && (
                                             <button
-                                                onClick={order.state === 4 ? () => handlePayment(order._id) : () => handleUpdateOrderStatus(order._id, 3)}
-                                                className={`px-3 py-1 rounded-full text-sm ${order.state === 4 ? 'bg-blue-100 text-blue-800 hover:bg-blue-200' : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'}`}
+                                                onClick={() => handleUpdateOrderStatus(order._id, 1)}
+                                                className="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800 hover:bg-blue-200"
                                             >
-                                                {order.state === 4 ? 'Thanh toán' : 'Đang giao'}
+                                                Đang giao
                                             </button>
                                         )}
-                                        {order.state === 3 && (
+                                        {order.state === 1 && (
                                             <button
-                                                onClick={() => handleUpdateOrderStatus(order._id, 4)}
-                                                className="px-3 py-1 rounded-full text-sm bg-green-100 text-green-800 hover:bg-green-200"
+                                                onClick={() => {
+                                                    setCurrentOrderId(order._id); // Set ID của đơn hàng hiện tại
+                                                    setIsModalOpen(true); // Mở modal xác nhận
+                                                }}
+                                                className="px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
                                             >
                                                 Đã giao
                                             </button>
                                         )}
-                                        <span className={`px-3 py-1 rounded-full text-sm ${order.state === 1 ? 'bg-green-100 text-green-800' :
-                                            order.state === 2 ? 'bg-red-100 text-red-800' :
-                                                order.state === 3 ? 'bg-yellow-100 text-yellow-800' :
-                                                    order.state === 4 ? 'bg-blue-100 text-blue-800' :
-                                                        'bg-gray-100 text-gray-800'
-                                            }`}>
-                                            {orderStates[order.state]}
-                                        </span>
+                                        {order.state === 2 && (
+                                            <span className="px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                                                Đã giao
+                                            </span>
+                                        )}
+                                        {order.state === 3 && (
+                                            <span className="px-3 py-1 rounded-full text-sm bg-red-100 text-red-800">
+                                                Đã hủy
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
 
@@ -308,7 +314,8 @@ const OrderList = () => {
                                         <div key={index} className="flex items-center space-x-4 border-b pb-4">
                                             <img
                                                 src={item.productId?.image[0]}
-                                                className="w-20 h-20 object-cover rounded"
+                                                className="w-20 h-20 object-cover rounded cursor-pointer"
+                                                onClick={() => setSelectedOrder(order)}
                                             />
                                             <div className="flex-1">
                                                 <h4 className="font-medium">{item.productId?.product_name}</h4>
@@ -337,15 +344,16 @@ const OrderList = () => {
                 )}
             </div>
 
-            <ConfirmationModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onConfirm={handleConfirmPayment}
-            />
             <OrderDetailModal
                 isOpen={!!selectedOrder}
                 onClose={() => setSelectedOrder(null)}
                 order={selectedOrder}
+            />
+
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onConfirm={handleConfirmPayment}
             />
         </Layout>
     );

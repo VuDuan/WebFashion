@@ -24,7 +24,7 @@ const Signin = () => {
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-md w-96">
                 <img src="/logo.png" alt="Logo" className="w-24 h-24 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold text-center mb-6">Sign In</h2>
+                <h2 className="text-2xl font-bold text-center mb-6">FASHION GENZ</h2>
                 <form onSubmit={handleSubmit}>
                     <input
                         type="email"

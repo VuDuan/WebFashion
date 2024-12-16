@@ -372,7 +372,7 @@ export default function Products() {
                                         />
                                     </td>
                                     <td className="px-4 py-2">{product.product_name}</td>
-                                    <td className="px-4 py-2">${product.price}</td>
+                                    <td className="px-4 py-2">{product.price} đ</td>
                                     <td className="px-4 py-2">{product.quantity}</td>
                                     <td className="px-4 py-2 overflow-hidden whitespace-nowrap text-ellipsis w-[30px]" style={{ maxWidth: '30px' }}>
                                         {product.description}

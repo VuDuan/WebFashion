@@ -4,23 +4,22 @@ import NavigationItem, { NavigationItemProps } from "./navigation-items";
 import clsx from "clsx";
 import Svg from "../icons/svg";
 import Avatar from "../common/avatar";
-import LogoutModal from "@/app/logout/page"; // Đảm bảo đường dẫn là chính xác
+import LogoutModal from "@/app/logout/page";
 import { useRouter } from "next/navigation";
 // Danh sách navigation phía trên
 const navItems: NavigationItemProps[] = [
-  { title: "Dashboard", href: "/dashboard", icon: "/icons/navbar/dash.svg" },
-  { title: "Type Product", href: "/productType", icon: "/icons/navbar/product.svg" },
-  { title: "Order", href: "/order", icon: "/icons/navbar/order.svg" },
-  { title: "Statistic", href: "/statisticts", icon: "/icons/navbar/static.svg" },
-  { title: "Supplier", href: "/supliers", icon: "/icons/navbar/supli.svg" },
-  { title: "Products", href: "/products", icon: "/icons/navbar/product.svg" },
+  { title: "Loại sản phẩm", href: "/type", icon: "/icons/navbar/product.svg" },
+  { title: "Sản phẩm", href: "/products", icon: "/icons/navbar/product.svg" },
+  { title: "Đơn hàng", href: "/order", icon: "/icons/navbar/order.svg" },
+  { title: "Thống kê doanh thu", href: "/statisticts", icon: "/icons/navbar/static.svg" },
+  { title: "Nhà cung cấp", href: "/supliers", icon: "/icons/navbar/supli.svg" },
   { title: "Voucher", href: "/voucher", icon: "/icons/navbar/vouche.svg" },
 ];
 
 // Danh sách navigation phía dưới
 const bottomNavItems: NavigationItemProps[] = [
-  { title: "Setting", href: "/logout", icon: "/icons/navbar/user.svg" },
-  { title: "Notification", href: "/dashboard", icon: "/icons/navbar/noti.svg" },
+  { title: "Đăng xuất", href: "/logout", icon: "/icons/navbar/user.svg" },
+  { title: "Thông báo", href: "/dashboard", icon: "/icons/navbar/noti.svg" },
 ];
 
 const Layout = ({
@@ -61,10 +60,10 @@ const Layout = ({
               isCollapsed && "flex-col space-x-0 justify-center p-10"
             )}
           >
-            <Avatar
+            {/* <Avatar
               name="workspaceDetail?.name"
               className="w-8 h-8 rounded-lg flex items-center justify-center bg-orange-200 text-center"
-            />
+            /> */}
             {!isCollapsed && (
               <p className="text-sm font-semibold max-w-[80%] truncate">
                 {"Fashion Genz"}

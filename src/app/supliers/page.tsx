@@ -161,22 +161,22 @@ const Suppliers = () => {
 
     const columns = [
         {
-            title: 'Image',
+            title: 'Ảnh',
             dataIndex: 'image',
             render: (text: any, record: any) => (
                 <img src={record.image} alt={record.name} className="w-16 h-16 object-cover rounded-md" />
             )
         },
         {
-            title: 'Name',
+            title: 'Tên',
             dataIndex: 'name',
         },
         {
-            title: 'Description',
+            title: 'Mô tả',
             dataIndex: 'description',
         },
         {
-            title: 'Phone',
+            title: 'Số điện thoại',
             dataIndex: 'phone',
         },
         {
@@ -187,18 +187,19 @@ const Suppliers = () => {
             title: 'Actions',
             render: (text: any, supplier: any) => (
                 <>
-                    <button
-                        onClick={() => handleEdit(supplier)}
-                        className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded"
-                    >
-                        Update
-                    </button>
-                    <button
-                        onClick={() => handleDelete(supplier)}
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded ml-2"
-                    >
-                        Delete
-                    </button>
+                    <div className='space-y-2 items-center justify-center'>
+                        <button
+                            onClick={() => handleEdit(supplier)}
+                            className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded"
+                        >
+                            Sửa 
+                        </button>
+                        <button
+                            onClick={() => handleDelete(supplier)}
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                        >
+                            Xoá
+                        </button></div>
                 </>
             )
         }
@@ -211,7 +212,7 @@ const Suppliers = () => {
         <Layout>
             <div className="p-4">
                 <div className="flex justify-between items-center mb-4">
-                    <h1 className="text-2xl font-bold">Suppliers</h1>
+                    <h1 className="text-2xl font-bold">Nhà cung cấp</h1>
                     <button
                         onClick={() => {
                             if (showForm) {
@@ -222,7 +223,7 @@ const Suppliers = () => {
                         }}
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     >
-                        {showForm ? 'Đóng' : 'Add Suppliers'}
+                        {showForm ? 'Đóng' : 'Thêm nhà cung cấp'}
                     </button>
                 </div>
 
@@ -232,7 +233,7 @@ const Suppliers = () => {
                             {isEditing ? 'Cập nhật nhà cung cấp' : 'Thêm nhà cung cấp mới'}
                         </h2>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Name</label>
+                            <label className="block text-sm font-medium text-gray-700">Tên</label>
                             <input
                                 type="text"
                                 name="name"
@@ -244,7 +245,7 @@ const Suppliers = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Phone</label>
+                            <label className="block text-sm font-medium text-gray-700">Số điện thoại</label>
                             <input
                                 type="tel"
                                 name="phone"
