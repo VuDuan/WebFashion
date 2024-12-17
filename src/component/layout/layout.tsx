@@ -96,7 +96,7 @@ const Layout = ({
               key={index}
               {...nav}
               isCollapsed={isCollapsed}
-              onClick={nav.title === "Setting" ? (e) => {
+              onClick={nav.title === "Đăng xuất" ? (e) => {
                 e.preventDefault(); // Ngăn chặn điều hướng
                 setIsModalOpen(true); // Mở modal
               } : undefined} // Mở modal khi bấm vào Setting
