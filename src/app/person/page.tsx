@@ -65,17 +65,17 @@ export default function Person() {
         <Layout>
             <div className="container mx-auto px-4 py-8">
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold text-gray-800">Client List</h1>
+                    <h1 className="text-3xl font-bold text-gray-800">Danh sách người dùng</h1>
                 </div>
 
                 <div className="overflow-y-auto h-[620px]">
                     <table className="min-w-full bg-white shadow-md rounded">
                         <thead className="bg-gray-200">
                             <tr>
-                                <th className="px-4 py-2 text-left">Image</th>
-                                <th className="px-4 py-2 text-left">Name</th>
-                                <th className="px-4 py-2 text-left">Address</th>
-                                <th className="px-4 py-2 text-left">Phone</th>
+                                <th className="px-4 py-2 text-left">Ảnh</th>
+                                <th className="px-4 py-2 text-left">Tên</th>
+                                <th className="px-4 py-2 text-left">Địa chỉ</th>
+                                <th className="px-4 py-2 text-left">số điện thoại</th>
                                 <th className="px-4 py-2 text-left">Email</th>
                             </tr>
                         </thead>
@@ -86,7 +86,7 @@ export default function Person() {
                                         <img
                                             src={persons.avatar
                                                 ? `data:image/png;base64,${persons.avatar}`
-                                                : "/icons/image/1.png"}
+                                                : "/icons/image/user.png"}
                                             alt={persons.name}
                                             className="w-20 h-20 object-cover rounded"
                                         />

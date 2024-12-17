@@ -76,7 +76,7 @@ const OrderDetailModal = ({ isOpen, onClose, order }) => {
                         </li>
                     ))}
                 </ul>
-                <div className="flex m-4">
+                <div className="flex mt-4">
                     <button onClick={handlePrevImage}>
                         <Image src="/icons/image/1.png" alt='' className="w-4 h-4 mr-2" width={20} height={20} />
                     </button>

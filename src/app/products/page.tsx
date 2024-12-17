@@ -257,22 +257,22 @@ export default function Products() {
         <Layout>
             <div className="container mx-auto px-4 py-8">
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold text-gray-800">Products List</h1>
+                    <h1 className="text-3xl font-bold text-gray-800">Danh sách sản phẩm</h1>
                     <button
                         onClick={() => openModal()}
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
                     >
-                        Add Product
+                        Thêm sản phẩm mới
                     </button>
                 </div>
 
                 {isModalOpen && (
                     <div className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto">
                         <div className="bg-white rounded shadow-lg p-6 w-1/2">
-                            <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit Product' : 'Add Product'}</h2>
+                            <h2 className="text-xl font-bold mb-4">{isEditing ? 'Sửa sản phẩm' : 'Thêm sản phẩm'}</h2>
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-4 text-[12px]">
-                                    <label className="block mb-2 text-gray-700">Product Name</label>
+                                    <label className="block mb-2 text-gray-700">Tên sản phẩm</label>
                                     <input
                                         type="text"
                                         className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -283,7 +283,7 @@ export default function Products() {
                                 </div>
 
                                 <div className="mb-4 text-[12px]">
-                                    <label className="block mb-2 text-gray-700">Images</label>
+                                    <label className="block mb-2 text-gray-700">Ảnh</label>
                                     <input
                                         type="file"
                                         multiple
@@ -305,7 +305,7 @@ export default function Products() {
                                 </div>
 
                                 <div className="mb-4 text-[12px]">
-                                    <label className="block mb-2 text-gray-700">Product Type</label>
+                                    <label className="block mb-2 text-gray-700">Loại sản phẩm</label>
                                     <select
                                         className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         value={formData.id_producttype}
@@ -322,7 +322,7 @@ export default function Products() {
                                 </div>
 
                                 <div className="mb-4 text-[12px]">
-                                    <label className="block mb-2 text-gray-700">Supplier</label>
+                                    <label className="block mb-2 text-gray-700">Nhà cung cấp</label>
                                     <select
                                         className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         value={formData.id_suppliers}
@@ -358,7 +358,7 @@ export default function Products() {
                                 </div>
 
                                 <div className="mb-4 text-[12px]">
-                                    <label className="block mb-2 text-gray-700">Description</label>
+                                    <label className="block mb-2 text-gray-700">Mô tả</label>
                                     <input
                                         type="text"
                                         className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -380,7 +380,7 @@ export default function Products() {
                                         onClick={closeModal}
                                         className="ml-2 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
                                     >
-                                        Cancel
+                                        Huỷ
                                     </button>
                                 </div>
                             </form>
@@ -390,7 +390,7 @@ export default function Products() {
                 {isReviewModalOpen && (
                     <div className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto">
                         <div className="bg-white rounded shadow-lg p-6 w-1/2">
-                            <h2 className="text-xl font-bold mb-4">Product Reviews</h2>
+                            <h2 className="text-xl font-bold mb-4">Đánh giá của sản phẩm</h2>
                             <ul>
                                 {currentReviews.length > 0 ? (
                                     currentReviews.map((review) => (
@@ -417,11 +417,11 @@ export default function Products() {
                     <table className="min-w-full bg-white shadow-md rounded">
                         <thead className="bg-gray-200">
                             <tr>
-                                <th className="px-4 py-2 text-left">Image</th>
-                                <th className="px-4 py-2 text-left">Name</th>
-                                <th className="px-4 py-2 text-left">Price</th>
-                                <th className="px-4 py-2 text-left">Quantity</th>
-                                <th className="px-4 py-2 text-left">Description</th>
+                                <th className="px-4 py-2 text-left">ẢNh</th>
+                                <th className="px-4 py-2 text-left">Tên</th>
+                                <th className="px-4 py-2 text-left">Giá</th>
+                                <th className="px-4 py-2 text-left">Số lượng</th>
+                                <th className="px-4 py-2 text-left">Mô tả</th>
                                 <th className="px-4 py-2 text-left">Actions</th>
                             </tr>
                         </thead>
@@ -448,13 +448,13 @@ export default function Products() {
                                                 className="w-[90px] border rounded px-3 py-2 focus:outline-none focus:ring-2 bg-yellow-500"
                                                 onClick={() => openModal(product)}
                                             >
-                                                Edit
+                                                Sửa
                                             </button>
                                             <button
                                                 className="w-[90px] border rounded px-3 py-2 focus:outline-none focus:ring-2 bg-red-500"
                                                 onClick={() => handleDelete(product._id)}
                                             >
-                                                Delete
+                                                Xoá
                                             </button>
                                         </div>
                                     </td>
