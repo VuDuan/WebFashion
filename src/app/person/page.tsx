@@ -84,7 +84,9 @@ export default function Person() {
                                 <tr key={persons.userId} className="border-b hover:bg-gray-100 transition duration-200">
                                     <td className="px-4 py-2">
                                         <img
-                                            src={`data:image/png;base64,${persons.avatar}`}
+                                            src={persons.avatar
+                                                ? `data:image/png;base64,${persons.avatar}`
+                                                : "/icons/image/1.png"}
                                             alt={persons.name}
                                             className="w-20 h-20 object-cover rounded"
                                         />

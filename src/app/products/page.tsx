@@ -309,7 +309,8 @@ export default function Products() {
                                     <select
                                         className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         value={formData.id_producttype}
-                                        onChange={handleProductTypeChange} required
+                                        onChange={handleProductTypeChange}
+                                        required
                                     >
                                         <option value="">Select Product Type</option>
                                         {type.map((t) => (
@@ -354,7 +355,9 @@ export default function Products() {
                                             />
                                         </div>
                                     ))}
-                                </div> <div className="mb-4 text-[12px]">
+                                </div>
+
+                                <div className="mb-4 text-[12px]">
                                     <label className="block mb-2 text-gray-700">Description</label>
                                     <input
                                         type="text"
@@ -472,4 +475,4 @@ export default function Products() {
             </div>
         </Layout>
     );
-}
+};
