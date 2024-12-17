@@ -6,9 +6,18 @@ import CONFIG from '@/api/config';
 import { Table, Pagination } from 'antd';
 
 interface SizeQuantity {
-    sizeId: string; // Thêm thuộc tính sizeId
+    sizeId: string;
     size: string;
     quantity: string;
+}
+
+interface Review {
+    _id: string;
+    id_client: string;
+    product: { productId: string; sizeId: string; quantity: number; }[];
+    text: string;
+    stars: number;
+    date: string;
 }
 
 interface List {
@@ -22,6 +31,8 @@ interface List {
     id_suppliers: string;
     selectedVoucher: string;
     sizeQuantities: SizeQuantity[];
+    image: string[];
+    reviews: Review[];
 }
 
 export default function Products() {
@@ -47,7 +58,9 @@ export default function Products() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [currentProductId, setCurrentProductId] = useState(null);
-    const router = useRouter();
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [currentReviews, setCurrentReviews] = useState<Review[]>([]);
+    console.log("aa", currentReviews);
 
     useEffect(() => {
         fetchProducts();
@@ -60,10 +73,10 @@ export default function Products() {
             const response = await fetch(`${CONFIG.API_BASE_URL}/prodct`);
             const data = await response.json();
             if (data.status === 200) {
-                const updatedProducts = data.data.map((product: List) => {
-                    const totalQuantity = product.sizeQuantities.reduce((sum, size) => sum + (size.quantity || 0), 0);
-                    return { ...product, quantity: totalQuantity }; // Cập nhật quantity
-                });
+                const updatedProducts = data.data.map((product: List) => ({
+                    ...product,
+                    quantity: product.sizeQuantities.reduce((sum, size) => sum + (size.quantity || 0), 0),
+                }));
                 setProducts(updatedProducts);
             }
         } catch (error) {
@@ -95,6 +108,22 @@ export default function Products() {
         }
     };
 
+    const fetchReviews = async (productId: string) => {
+        try {
+            const response = await fetch(`${CONFIG.API_BASE_URL}/get-evaluation/${productId}?_=${Date.now()}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                setCurrentReviews(data);
+            } else {
+                console.error('Error fetching reviews:', data.message);
+                setCurrentReviews([]);
+            }
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
+            setCurrentReviews([]);
+        }
+    };
     const handleDelete = async (id: any) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             try {
@@ -109,6 +138,7 @@ export default function Products() {
             }
         }
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formDataToSend = new FormData();
@@ -119,11 +149,11 @@ export default function Products() {
 
         const updatedSizeQuantities = sizeQuantities.map(({ sizeId, quantity }) => ({
             sizeId,
-            quantity: Number(quantity) || 0 // Chuyển đổi sang number
+            quantity: Number(quantity) || 0,
         }));
 
         const totalQuantity = updatedSizeQuantities.reduce((sum, size) => sum + (size.quantity || 0), 0);
-        setFormData({ ...formData, quantity: totalQuantity }); // Cập nhật quantity
+        setFormData({ ...formData, quantity: totalQuantity });
 
         Object.keys(formData).forEach(key => {
             if (key === 'sizeQuantities') {
@@ -156,7 +186,6 @@ export default function Products() {
         setFormData({ ...formData, id_producttype: selectedTypeId });
 
         const selectedType = type.find(t => t._id === selectedTypeId);
-
         if (selectedType && Array.isArray(selectedType.id_size)) {
             setAvailableSizes(selectedType.id_size);
             setSizeQuantities(selectedType.id_size.map(size => ({ sizeId: size._id, size: size.name, quantity: '' })));
@@ -210,6 +239,15 @@ export default function Products() {
     const closeModal = () => {
         setIsModalOpen(false);
         setImages([]);
+    };
+
+    const openReviewModal = async (product: List) => {
+        await fetchReviews(product._id); // Gọi API để lấy đánh giá
+        setIsReviewModalOpen(true);
+    };
+
+    const closeReviewModal = () => {
+        setIsReviewModalOpen(false);
     };
 
     const startIndex = (currentPage - 1) * pageSize;
@@ -271,8 +309,7 @@ export default function Products() {
                                     <select
                                         className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         value={formData.id_producttype}
-                                        onChange={handleProductTypeChange}
-                                        required
+                                        onChange={handleProductTypeChange} required
                                     >
                                         <option value="">Select Product Type</option>
                                         {type.map((t) => (
@@ -317,8 +354,7 @@ export default function Products() {
                                             />
                                         </div>
                                     ))}
-                                </div>
-                                <div className="mb-4 text-[12px]">
+                                </div> <div className="mb-4 text-[12px]">
                                     <label className="block mb-2 text-gray-700">Description</label>
                                     <input
                                         type="text"
@@ -348,6 +384,31 @@ export default function Products() {
                         </div>
                     </div>
                 )}
+                {isReviewModalOpen && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto">
+                        <div className="bg-white rounded shadow-lg p-6 w-1/2">
+                            <h2 className="text-xl font-bold mb-4">Product Reviews</h2>
+                            <ul>
+                                {currentReviews.length > 0 ? (
+                                    currentReviews.map((review) => (
+                                        <li key={review._id} className="border-b py-2">
+                                            <strong>{review.stars} Stars:</strong> {review.text}
+                                        </li>
+                                    ))
+                                ) : (
+                                    <li className="py-2">No reviews available.</li>
+                                )}
+                            </ul>
+                            <button
+                                type="button"
+                                onClick={closeReviewModal}
+                                className="mt-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 <div className="overflow-y-auto h-[620px]">
                     <table className="min-w-full bg-white shadow-md rounded">
@@ -368,7 +429,8 @@ export default function Products() {
                                         <img
                                             src={product.image[0]}
                                             alt={product.product_name}
-                                            className="w-20 h-20 object-cover rounded"
+                                            className="w-20 h-20 object-cover rounded cursor-pointer"
+                                            onClick={() => openReviewModal(product)} // Mở modal đánh giá khi nhấp vào
                                         />
                                     </td>
                                     <td className="px-4 py-2">{product.product_name}</td>

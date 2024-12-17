@@ -14,12 +14,12 @@ const navItems: NavigationItemProps[] = [
   { title: "Thống kê doanh thu", href: "/statisticts", icon: "/icons/navbar/static.svg" },
   { title: "Nhà cung cấp", href: "/supliers", icon: "/icons/navbar/supli.svg" },
   { title: "Voucher", href: "/voucher", icon: "/icons/navbar/vouche.svg" },
+  { title: "Thông tin người dùng", href: "/person", icon: "/icons/navbar/user.svg" },
 ];
 
 // Danh sách navigation phía dưới
 const bottomNavItems: NavigationItemProps[] = [
-  { title: "Đăng xuất", href: "/logout", icon: "/icons/navbar/user.svg" },
-  { title: "Thông báo", href: "/dashboard", icon: "/icons/navbar/noti.svg" },
+  { title: "Đăng xuất", href: "/logout", icon: "/icons/navbar/log.svg" },
 ];
 
 const Layout = ({
@@ -32,13 +32,13 @@ const Layout = ({
   const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái cho modal
   const ref = useRef<HTMLDivElement>(null);
-  const router = useRouter(); 
+  const router = useRouter();
   const handleLogout = () => {
     // Logic để đăng xuất (ví dụ xóa token, điều hướng trang, v.v.)
     console.log("User logged out");
-    router.push("/login"); // Chỉnh sửa đường dẫn đến trang bạn muốn
+    router.push("/auth"); // Chỉnh sửa đường dẫn đến trang bạn muốn
     setIsModalOpen(false); // Đóng modal
-    setIsModalOpen(false);
+    // setIsModalOpen(false);
   };
 
   return (
